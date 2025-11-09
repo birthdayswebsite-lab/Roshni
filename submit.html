@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 Birthday Surprise Form 🎁</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #000428, #004e92);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    overflow: hidden;
+    flex-direction: column;
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px 50px;
+    box-shadow: 0 0 25px rgba(255,255,255,0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+    animation: fadeIn 2s ease;
+    position: relative;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px #ff69b4;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    color: #eee;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+  }
+
+  textarea {
+    resize: none;
+    height: 80px;
+  }
+
+  button {
+    background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 15px;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff66cc;
+  }
+
+  .back-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(45deg, #00ccff, #ff66cc);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .back-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #ff66cc;
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: sparkle 2s infinite ease-in-out;
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+
+  .success {
+    display: none;
+    color: #00ff99;
+    margin-top: 15px;
+    text-shadow: 0 0 10px #00ff99;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 🎵 Background Music -->
+  <audio id="bgmusic" autoplay loop>
+    <source src="birthday.mp3" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='select.html'">⬅️ Back to Party</button>
+
+    <h2 id="greet">🎉 Hey there! 🎉</h2>
+    <p>Fill this out and send your fun wishes 💖</p>
+
+    <form id="wishForm">
+      <label>Name</label>
+      <input type="text" id="name" name="name" readonly>
+
+      <label>How do you call her (Nick name)</label>
+      <input type="text" id="nickname" name="nickname" placeholder="E.g., Rosh 💕" required>
+
+      <label>Which thing do you like from her</label>
+      <input type="text" id="like" name="like" placeholder="Her smile? Her kindness? 😍" required>
+
+      <label>Your Wishes</label>
+      <textarea id="wish" name="wish" placeholder="Write your special wish 🎂" required></textarea>
+
+      <button type="submit">🎈 Send My Wish 🎈</button>
+      <div id="successMsg" class="success">🎊 Your wish has been sent! Thank you 💖</div>
+    </form>
+  </div>
+
+  <script>
+    // ✨ Sparkles effect
+    for (let i = 0; i < 30; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 100 + 'vh';
+      s.style.animationDelay = Math.random() * 2 + 's';
+      document.body.appendChild(s);
+    }
+
+    // 🎂 Load stored name
+    const storedName = localStorage.getItem("username");
+    const greetEl = document.getElementById("greet");
+    const nameField = document.getElementById("name");
+
+    if (storedName) {
+      greetEl.textContent = `🎉 Hey ${storedName}! 🎉`;
+      nameField.value = storedName;
+    }
+
+    // 📝 Form submission
+    const form = document.getElementById("wishForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: nameField.value,
+        nickname: document.getElementById("nickname").value,
+        like: document.getElementById("like").value,
+        wish: document.getElementById("wish").value
+      };
+
+      try {
+        const response = await fetch("https://sheetdb.io/api/v1/9gbk89xckfntu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: [data] })
+        });
+
+        if (response.ok) {
+          document.getElementById("successMsg").style.display = "block";
+          form.reset();
+          nameField.value = storedName;
+        } else {
+          alert("❌ Something went wrong, try again!");
+        }
+      } catch (error) {
+        alert("⚠️ Network error, please check your connection.");
+      }
+    });
+  </script>
+</body>
+</html>

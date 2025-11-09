@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💖 Roshni’s Magical Celebration 💖</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: url('media/rose1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+  }
+
+  h2 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 25px #ff66cc, 0 0 50px #00e6e6;
+    animation: glow 2s ease-in-out infinite alternate;
+    z-index: 1;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 20px #ff69b4; }
+    to { text-shadow: 0 0 40px #00ffff; }
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: #eee;
+    max-width: 700px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    text-shadow: 0 0 10px #fff;
+    animation: fadeIn 3s ease;
+    z-index: 1;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn {
+    background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
+    border: none;
+    padding: 1rem 3rem;
+    margin: 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+  }
+
+  .btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff66cc, 0 0 60px #66ccff;
+  }
+
+  /* Confetti */
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 16px;
+    opacity: 0.8;
+    border-radius: 3px;
+    animation: fall 4s linear infinite;
+  }
+
+  @keyframes fall {
+    from { transform: translateY(-10px) rotate(0deg); }
+    to { transform: translateY(110vh) rotate(720deg); }
+  }
+
+  /* Sparkles */
+  .sparkle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: sparkle 2s infinite ease-in-out;
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* Popup (name input) */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px #00ffff;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .popup h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    color: #ffcc00;
+  }
+
+  .popup input {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .popup button {
+    background: linear-gradient(45deg, #ff66cc, #00ccff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+  }
+
+  .popup button:hover {
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+  <h2>💫 Welcome to Roshni’s Magical Celebration 💫</h2>
+  <p id="quote">“Birthdays are nature’s way of telling us to eat more cake and dance like nobody’s watching!” 🎂💃</p>
+
+  <div>
+    <button class="btn" id="surpriseBtn">🎁 Drop a Surprise 🎁</button>
+    <button class="btn" id="madnessBtn">🤣 See the Madness 🤣</button>
+  </div>
+
+  <!-- Name popup -->
+  <div id="popup" class="popup">
+    <h3>🎈 Hey, what’s your name? 🎂</h3>
+    <input type="text" id="username" placeholder="Enter your name 💖">
+    <button onclick="submitName()">Let’s Go ➡️</button>
+  </div>
+
+  <script>
+    // 🌸 Quotes rotation
+    const quotes = [
+      "“Count your candles, not your wrinkles. Shine on, superstar!” ✨",
+      "“Age is merely the number of years the world has been enjoying you!” 🌍💖",
+      "“Eat cake. Laugh hard. Repeat. Calories don’t count today!” 🍰😂",
+      "“Smile big, dance weird, and make the day unforgettable!” 💃🕺",
+      "“Warning: Too much birthday may cause happiness overload!” 🎈😜",
+      "“Birthdays are just confetti in your timeline—make it sparkle!” 🎊✨"
+    ];
+
+    const quoteElement = document.getElementById('quote');
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % quotes.length;
+      quoteElement.style.opacity = 0;
+      setTimeout(() => {
+        quoteElement.innerHTML = quotes[i];
+        quoteElement.style.opacity = 1;
+      }, 500);
+    }, 4000);
+
+    // 🎊 Confetti
+    const confettiColors = ['#ff3b3b', '#ffd93b', '#3b9eff', '#9c27b0', '#ff8a00'];
+    function createConfetti() {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.top = '-10px';
+      c.style.animationDuration = (3 + Math.random() * 3) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+    setInterval(createConfetti, 200);
+
+    // ✨ Sparkles
+    for (let i = 0; i < 30; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 100 + 'vh';
+      s.style.animationDelay = Math.random() * 2 + 's';
+      document.body.appendChild(s);
+    }
+
+    // 🎁 Popup for name
+    const popup = document.getElementById('popup');
+    document.getElementById('surpriseBtn').addEventListener('click', () => {
+      popup.style.display = 'flex';
+    });
+
+    function submitName() {
+      const name = document.getElementById('username').value.trim();
+      if (name === '') {
+        alert('Please enter your name 🎂');
+        return;
+      }
+      localStorage.setItem('username', name);
+      window.location.href = 'submit.html';
+    }
+
+    // 🔒 Password Protection for "See the Madness"
+    document.getElementById('madnessBtn').addEventListener('click', () => {
+      const pwd = prompt("🔐 Enter Password to Continue:");
+      if (pwd === "Roshni12112002") {
+        window.location.href = 'display.html';
+      } else if (pwd !== null) {
+        alert("❌ Wrong password! Try again 😜");
+      }
+    });
+  </script>
+
+</body>
+</html>

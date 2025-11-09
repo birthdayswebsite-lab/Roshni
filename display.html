@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎂 Birthday Celebration Board 🎂</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    background: linear-gradient(to right, #000428, #004e92);
+  }
+
+  /* 🖼️ Left slideshow */
+  .left {
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* 👈 so users know it’s clickable */
+  }
+
+  .left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  .left img.active {
+    opacity: 1;
+  }
+
+  /* 💌 Right side */
+  .right {
+    width: 50%;
+    background: url('roshni/rose.jpg') no-repeat center center/cover;
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-blend-mode: lighten; /* make background more visible */
+    backdrop-filter: blur(2px);
+    position: relative;
+  }
+
+  .right::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4); /* darker overlay to make text readable */
+    z-index: 0;
+  }
+
+  .right > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px #ff66cc, 0 0 40px #00e6e6;
+  }
+
+  .wish-card {
+    width: 90%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.6s ease;
+  }
+
+  .wish-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .wish-card h3 {
+    color: #ffcc00;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+  }
+
+  .wish-card p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+  }
+
+  .buttons {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+  }
+
+  button {
+    background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #fff;
+  }
+
+  a.back-link {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  a.back-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Scrollbar style */
+  .right::-webkit-scrollbar {
+    width: 8px;
+  }
+  .right::-webkit-scrollbar-thumb {
+    background: #ff66cc;
+    border-radius: 5px;
+  }
+
+  /* 🌟 Modal Table */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: rgba(255,255,255,0.95);
+    color: #000;
+    border-radius: 15px;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  th {
+    background: #ff66cc;
+    color: white;
+  }
+
+  .close-btn {
+    background: #ff0066;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    float: right;
+    cursor: pointer;
+  }
+
+  .close-btn:hover {
+    background: #cc0055;
+  }
+</style>
+</head>
+<body>
+
+  <div class="left" id="slideshow">
+    <img src="media/rose1.jpg" class="active">
+    <img src="roshni/rose.jpg">
+    <img src="roshni/rose2.jpg">
+    <img src="roshni/rose3.jpg">
+    <img src="roshni/rose4.jpg">
+    <img src="roshni/rose5.jpg">
+    <img src="roshni/rose6.jpg">
+    <img src="roshni/rose7.jpg">
+    <img src="roshni/rose8.jpg">
+    <img src="roshni/rose9.jpg">
+    <img src="roshni/rose10.jpg">
+    <img src="roshni/rose11.jpg">
+    <img src="roshni/rose12.jpg">
+  </div>
+
+  <div class="right">
+    <h1>💖 Birthday Wishes 💖</h1>
+    <div id="wishesList">Loading wishes...</div>
+  </div>
+
+  <a href="select.html" class="back-link">← Back</a>
+
+  <div class="buttons">
+    <button onclick="refreshWishes()">🔄 Refresh Wishes</button>
+    <button onclick="showTable()">📊 Show All in Table</button>
+  </div>
+
+  <!-- 🎁 Modal -->
+  <div id="tableModal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">✖ Close</button>
+      <h2>All Birthday Wishes 🎉</h2>
+      <div id="tableContainer">Loading...</div>
+    </div>
+  </div>
+
+  <!-- 🎵 Background music -->
+  <audio autoplay loop>
+    <source src="birthday.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/9gbk89xckfntu";
+
+  const slides = document.querySelectorAll(".left img");
+  let current = 0;
+  let autoSlide;
+
+  // ⏰ Auto slideshow
+  function startSlideshow() {
+    autoSlide = setInterval(nextSlide, 3500);
+  }
+
+  function nextSlide() {
+    slides[current].classList.remove("active");
+    current = (current + 1) % slides.length;
+    slides[current].classList.add("active");
+  }
+
+  function previousSlide() {
+    slides[current].classList.remove("active");
+    current = (current - 1 + slides.length) % slides.length;
+    slides[current].classList.add("active");
+  }
+
+  // 👆 Change image when touched / clicked
+  document.querySelector(".left").addEventListener("click", () => {
+    clearInterval(autoSlide);
+    nextSlide();
+    startSlideshow();
+  });
+
+  startSlideshow();
+
+  // 🌸 Fetch and show all wishes
+  async function loadWishes() {
+    try {
+      const res = await fetch(SHEETDB_URL);
+      const data = await res.json();
+      const list = document.getElementById("wishesList");
+      list.innerHTML = "";
+
+      if (data.length === 0) {
+        list.innerHTML = "<p>No wishes yet! 🥺</p>";
+        return;
+      }
+
+      data.forEach((entry, index) => {
+        const card = document.createElement("div");
+        card.className = "wish-card";
+        card.innerHTML = `
+          <h3>${entry.name || "Anonymous"} 💫</h3>
+          <p><strong>Nickname:</strong> ${entry.nickname || "—"}</p>
+          <p><strong>Likes:</strong> ${entry.like || "—"}</p>
+          <p><strong>Wish:</strong> ${entry.wish || "—"}</p>
+        `;
+        list.appendChild(card);
+        setTimeout(() => card.classList.add("show"), index * 200);
+      });
+    } catch (err) {
+      console.error(err);
+      document.getElementById("wishesList").innerHTML = "<p>⚠️ Error loading wishes</p>";
+    }
+  }
+
+  function refreshWishes() {
+    document.getElementById("wishesList").innerHTML = "Refreshing...";
+    loadWishes();
+  }
+
+  // 📊 Table modal
+  async function showTable() {
+    const modal = document.getElementById("tableModal");
+    const tableContainer = document.getElementById("tableContainer");
+    modal.style.display = "flex";
+    tableContainer.innerHTML = "Loading...";
+
+    try {
+      const res = await fetch(SHEETDB_URL);
+      const data = await res.json();
+
+      if (data.length === 0) {
+        tableContainer.innerHTML = "<p>No data found.</p>";
+        return;
+      }
+
+      let html = `<table>
+        <tr><th>Name</th><th>Nickname</th><th>Likes</th><th>Wish</th></tr>`;
+
+      data.forEach(d => {
+        html += `<tr>
+          <td>${d.name || "—"}</td>
+          <td>${d.nickname || "—"}</td>
+          <td>${d.like || "—"}</td>
+          <td>${d.wish || "—"}</td>
+        </tr>`;
+      });
+
+      html += "</table>";
+      tableContainer.innerHTML = html;
+    } catch (err) {
+      tableContainer.innerHTML = "<p>Error loading data!</p>";
+    }
+  }
+
+  function closeModal() {
+    document.getElementById("tableModal").style.display = "none";
+  }
+
+  loadWishes();
+</script>
+
+</body>
+</html>
