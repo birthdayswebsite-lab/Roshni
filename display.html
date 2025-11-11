@@ -10,10 +10,11 @@
     margin: 0;
     height: 100vh;
     display: flex;
-    overflow: hidden;
+    flex-wrap: wrap;
     font-family: 'Poppins', sans-serif;
     color: #fff;
     background: linear-gradient(to right, #000428, #004e92);
+    overflow-x: hidden;
   }
 
   /* 🖼️ Left slideshow */
@@ -21,7 +22,8 @@
     width: 50%;
     position: relative;
     overflow: hidden;
-    cursor: pointer; /* 👈 so users know it’s clickable */
+    cursor: pointer;
+    height: 100vh;
   }
 
   .left img {
@@ -33,36 +35,32 @@
     transition: opacity 1.2s ease-in-out;
   }
 
-  .left img.active {
-    opacity: 1;
-  }
+  .left img.active { opacity: 1; }
 
   /* 💌 Right side */
   .right {
     width: 50%;
     background: url('roshni/rose.jpg') no-repeat center center/cover;
-    padding: 40px;
+    padding: 40px 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-blend-mode: lighten; /* make background more visible */
+    background-blend-mode: lighten;
     backdrop-filter: blur(2px);
     position: relative;
+    height: 100vh;
   }
 
   .right::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.4); /* darker overlay to make text readable */
+    background: rgba(0,0,0,0.4);
     z-index: 0;
   }
 
-  .right > * {
-    position: relative;
-    z-index: 1;
-  }
+  .right > * { position: relative; z-index: 1; }
 
   h1 {
     text-align: center;
@@ -91,36 +89,38 @@
 
   .wish-card h3 {
     color: #ffcc00;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     margin-bottom: 5px;
   }
 
   .wish-card p {
     margin: 5px 0;
-    font-size: 1.1rem;
-    line-height: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.4rem;
   }
 
   .buttons {
     position: absolute;
     bottom: 20px;
     left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   button {
     background: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff);
     border: none;
-    padding: 12px 25px;
+    padding: 10px 20px;
     border-radius: 30px;
     color: white;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
-    margin-right: 10px;
   }
 
   button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: 0 0 20px #fff;
   }
 
@@ -131,16 +131,13 @@
     color: #fff;
     text-decoration: none;
     font-weight: bold;
+    z-index: 2;
   }
 
-  a.back-link:hover {
-    text-decoration: underline;
-  }
+  a.back-link:hover { text-decoration: underline; }
 
-  /* Scrollbar style */
-  .right::-webkit-scrollbar {
-    width: 8px;
-  }
+  /* Scrollbar */
+  .right::-webkit-scrollbar { width: 8px; }
   .right::-webkit-scrollbar-thumb {
     background: #ff66cc;
     border-radius: 5px;
@@ -156,6 +153,7 @@
     background: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
+    z-index: 5;
   }
 
   .modal-content {
@@ -195,11 +193,53 @@
     cursor: pointer;
   }
 
-  .close-btn:hover {
-    background: #cc0055;
+  .close-btn:hover { background: #cc0055; }
+
+  /* 📱 MOBILE VIEW FIX */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .left, .right {
+      width: 100%;
+      height: 50vh;
+    }
+
+    .right {
+      padding: 20px 10px 80px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .wish-card {
+      width: 95%;
+      font-size: 0.9rem;
+      padding: 15px;
+    }
+
+    button {
+      padding: 8px 15px;
+      font-size: 0.9rem;
+    }
+
+    .buttons {
+      position: static;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .modal-content {
+      width: 95%;
+      max-height: 80vh;
+    }
   }
 </style>
 </head>
+
 <body>
 
   <div class="left" id="slideshow">
@@ -211,26 +251,20 @@
     <img src="roshni/rose5.jpg">
     <img src="roshni/rose6.jpg">
     <img src="roshni/rose7.jpg">
-    <img src="roshni/rose8.jpg">
-    <img src="roshni/rose9.jpg">
-    <img src="roshni/rose10.jpg">
-    <img src="roshni/rose11.jpg">
-    <img src="roshni/rose12.jpg">
   </div>
 
   <div class="right">
     <h1>💖 Birthday Wishes 💖</h1>
     <div id="wishesList">Loading wishes...</div>
+
+    <div class="buttons">
+      <button onclick="refreshWishes()">🔄 Refresh Wishes</button>
+      <button onclick="showTable()">📊 Show All</button>
+    </div>
   </div>
 
   <a href="select.html" class="back-link">← Back</a>
 
-  <div class="buttons">
-    <button onclick="refreshWishes()">🔄 Refresh Wishes</button>
-    <button onclick="showTable()">📊 Show All in Table</button>
-  </div>
-
-  <!-- 🎁 Modal -->
   <div id="tableModal" class="modal">
     <div class="modal-content">
       <button class="close-btn" onclick="closeModal()">✖ Close</button>
@@ -239,7 +273,6 @@
     </div>
   </div>
 
-  <!-- 🎵 Background music -->
   <audio autoplay loop>
     <source src="birthday.mp3" type="audio/mpeg">
   </audio>
@@ -251,7 +284,6 @@
   let current = 0;
   let autoSlide;
 
-  // ⏰ Auto slideshow
   function startSlideshow() {
     autoSlide = setInterval(nextSlide, 3500);
   }
@@ -262,13 +294,6 @@
     slides[current].classList.add("active");
   }
 
-  function previousSlide() {
-    slides[current].classList.remove("active");
-    current = (current - 1 + slides.length) % slides.length;
-    slides[current].classList.add("active");
-  }
-
-  // 👆 Change image when touched / clicked
   document.querySelector(".left").addEventListener("click", () => {
     clearInterval(autoSlide);
     nextSlide();
@@ -277,7 +302,6 @@
 
   startSlideshow();
 
-  // 🌸 Fetch and show all wishes
   async function loadWishes() {
     try {
       const res = await fetch(SHEETDB_URL);
@@ -313,7 +337,6 @@
     loadWishes();
   }
 
-  // 📊 Table modal
   async function showTable() {
     const modal = document.getElementById("tableModal");
     const tableContainer = document.getElementById("tableContainer");
@@ -323,7 +346,6 @@
     try {
       const res = await fetch(SHEETDB_URL);
       const data = await res.json();
-
       if (data.length === 0) {
         tableContainer.innerHTML = "<p>No data found.</p>";
         return;
@@ -331,7 +353,6 @@
 
       let html = `<table>
         <tr><th>Name</th><th>Nickname</th><th>Likes</th><th>Wish</th></tr>`;
-
       data.forEach(d => {
         html += `<tr>
           <td>${d.name || "—"}</td>
@@ -340,7 +361,6 @@
           <td>${d.wish || "—"}</td>
         </tr>`;
       });
-
       html += "</table>";
       tableContainer.innerHTML = html;
     } catch (err) {
